@@ -41,9 +41,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         
-        Task {
-            await fetchPosts()
-        }
+        fetchPosts()
     }
     
     func setupUI() {
@@ -65,9 +63,11 @@ class ViewController: UIViewController {
         ])
     }
     
-    func fetchPosts() async {
-        await postTableViewModel.request(requestType: .post)
-        self.postTableView.reloadData()
+    func fetchPosts() {
+        Task {
+            await postTableViewModel.request(requestType: .post)
+            self.postTableView.reloadData()
+        }
     }
     
     @objc func clickedButton(_ sender: UIButton) {
@@ -77,7 +77,7 @@ class ViewController: UIViewController {
             postTableView.reloadData()
         } else {
             Task {
-                await fetchPosts()
+                fetchPosts()
             }
             buttonState = .normal
             button.setTitle("오른쪽", for: .normal)
