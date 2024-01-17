@@ -64,10 +64,23 @@ class ViewController: UIViewController {
     }
     
     func fetchPosts() {
-        Task {
-            await postTableViewModel.request(requestType: .post)
-            self.postTableView.reloadData()
+        // MainActor 사용 코드
+        Task.detached(priority: .background) { [weak self] in
+            await self?.postTableViewModel.request(requestType: .post)
+            
+            await MainActor.run { [weak self] in
+                self?.postTableView.reloadData()
+            }
         }
+        
+        // DispatchQueue main 사용 코드
+//        Task.detached(priority: .background) { [weak self] in
+//            await self?.postTableViewModel.request(requestType: .post)
+//            
+//            DispatchQueue.main.async { [weak self] in
+//                self?.postTableView.reloadData()
+//            }
+//        }
     }
     
     @objc func clickedButton(_ sender: UIButton) {
