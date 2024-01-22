@@ -11,11 +11,11 @@ final class PostTableViewModel {
     
     func request(requestType: RequestType) async {
         switch requestType {
-        case .user:
+        case .getUsers:
             print("User")
-        case .post:
+        case .getPosts:
             do {
-                try await NetworkManager.shared.request(requestType: .post) { (result: Result<[Post], NetworkError>) in
+                try await NetworkManager.shared.request(requestType: .getPosts) { (result: Result<[Post], NetworkError>) in
                     switch result {
                     case .success(let posts):
                         self.posts = posts

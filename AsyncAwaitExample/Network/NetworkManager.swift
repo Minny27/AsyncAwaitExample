@@ -8,14 +8,14 @@
 import Foundation
 
 enum RequestType {
-    case user
-    case post
+    case getUsers
+    case getPosts
     
     var urlString: String {
         switch self {
-        case .user:
+        case .getUsers:
             return "https://koreanjson.com/users"
-        case .post:
+        case .getPosts:
             return "https://koreanjson.com/posts"
         }
     }

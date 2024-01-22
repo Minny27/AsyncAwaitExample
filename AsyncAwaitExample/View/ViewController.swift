@@ -66,7 +66,7 @@ class ViewController: UIViewController {
     func fetchPosts() {
         // MainActor 사용 코드
         Task.detached(priority: .background) { [weak self] in
-            await self?.postTableViewModel.request(requestType: .post)
+            await self?.postTableViewModel.request(requestType: .getPosts)
             
             await MainActor.run { [weak self] in
                 self?.postTableView.reloadData()
