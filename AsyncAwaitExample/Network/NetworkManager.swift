@@ -7,9 +7,16 @@
 
 import Foundation
 
-enum RequestType {
+enum TargetType {
     case getUsers
     case getPosts
+    
+    enum HttpMethod: String {
+        case get = "GET"
+        case post = "POST"
+        case update = "UPDATE"
+        case delete = "DELETE"
+    }
     
     var urlString: String {
         switch self {
@@ -17,6 +24,15 @@ enum RequestType {
             return "https://koreanjson.com/users"
         case .getPosts:
             return "https://koreanjson.com/posts"
+        }
+    }
+    
+    var httpMethod: HttpMethod {
+        switch self {
+        case .getUsers:
+            return .get
+        case .getPosts:
+            return .get
         }
     }
 }
@@ -58,13 +74,26 @@ final class NetworkManager {
     
     private init() { }
     
-    func request<T: Decodable>(requestType: RequestType, completion: @escaping (Result<[T], NetworkError>) -> ()) async throws {
+    func request<T: Decodable>(requestType: TargetType, completion: @escaping (Result<[T], NetworkError>) -> ()) async throws {
         guard let url = URL(string: requestType.urlString) else {
             completion(.failure(.invalidURL))
             return
         }
         
-        let (data, response) = try await URLSession.shared.data(from: url)
+        let headers = [
+            "Accept": "application/json",
+            "Authorization": "Test"
+        ]
+        
+        var request = URLRequest(
+            url: url,
+            cachePolicy: .useProtocolCachePolicy,
+            timeoutInterval: 10.0
+        )
+        request.httpMethod = requestType.httpMethod.rawValue
+        request.allHTTPHeaderFields = headers
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
         
         guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
             completion(.failure(.invalidResponse))

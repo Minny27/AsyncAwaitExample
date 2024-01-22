@@ -9,7 +9,7 @@ final class PostTableViewModel {
     var posts: [Post] = []
     var filteredPosts: [Post] = []
     
-    func request(requestType: RequestType) async {
+    func request(requestType: TargetType) async {
         switch requestType {
         case .getUsers:
             print("User")
