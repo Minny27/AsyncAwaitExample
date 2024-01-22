@@ -74,8 +74,8 @@ final class NetworkManager {
     
     private init() { }
     
-    func request<T: Decodable>(requestType: TargetType, completion: @escaping (Result<[T], NetworkError>) -> ()) async throws {
-        guard let url = URL(string: requestType.urlString) else {
+    func request<T: Decodable>(targetType: TargetType, completion: @escaping (Result<[T], NetworkError>) -> ()) async throws {
+        guard let url = URL(string: targetType.urlString) else {
             completion(.failure(.invalidURL))
             return
         }
@@ -90,7 +90,7 @@ final class NetworkManager {
             cachePolicy: .useProtocolCachePolicy,
             timeoutInterval: 10.0
         )
-        request.httpMethod = requestType.httpMethod.rawValue
+        request.httpMethod = targetType.httpMethod.rawValue
         request.allHTTPHeaderFields = headers
         
         let (data, response) = try await URLSession.shared.data(for: request as URLRequest)
