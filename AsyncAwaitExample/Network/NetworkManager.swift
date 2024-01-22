@@ -85,7 +85,7 @@ final class NetworkManager {
             "Authorization": "Test"
         ]
         
-        var request = URLRequest(
+        let request = NSMutableURLRequest(
             url: url,
             cachePolicy: .useProtocolCachePolicy,
             timeoutInterval: 10.0
@@ -93,7 +93,7 @@ final class NetworkManager {
         request.httpMethod = requestType.httpMethod.rawValue
         request.allHTTPHeaderFields = headers
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request as URLRequest)
         
         guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
             completion(.failure(.invalidResponse))
